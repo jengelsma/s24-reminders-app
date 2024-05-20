@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Feather } from '@expo/vector-icons';
+import { CheckBox } from '@rneui/themed';
+import Toast from 'react-native-root-toast';
 
 const RemindersScreen = ({ route, navigation }) => {
   const items = [
@@ -31,13 +33,36 @@ const RemindersScreen = ({ route, navigation }) => {
     });
   });
 
+  const renderReminder = ({ index, item }) => {
+    return (
+      <CheckBox
+        title={item.text}
+        checked={item.done}
+        onPress={() => {
+          let newArr = [...reminders];
+          newArr[index] = { ...item, done: !item.done };
+          setReminders(newArr);
+        }}
+        onLongPress={() => {
+          let newArr = reminders.filter((val, idx) => {
+            return idx == index ? false : true;
+          });
+          setReminders(newArr);
+          Toast.show(`Deleted ${item.text}!`, {
+            duration: Toast.durations.SHORT,
+            animation: true,
+            hideOnPress: true,
+          });
+        }}
+      />
+    );
+  };
+
   return (
     <FlatList
       keyExtractor={(item) => item.text}
       data={reminders}
-      renderItem={({ index, item }) => {
-        return <Text> {item.text} </Text>;
-      }}
+      renderItem={renderReminder}
     />
   );
 };
