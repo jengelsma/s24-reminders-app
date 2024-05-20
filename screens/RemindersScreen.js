@@ -9,6 +9,11 @@ import React, { useEffect, useState } from 'react';
 import { Feather } from '@expo/vector-icons';
 import { CheckBox } from '@rneui/themed';
 import Toast from 'react-native-root-toast';
+import {
+  initRemindersDB,
+  writeData,
+  setupDataListener,
+} from '../helpers/fb-reminders';
 
 const RemindersScreen = ({ route, navigation }) => {
   const items = [
@@ -31,10 +36,21 @@ const RemindersScreen = ({ route, navigation }) => {
   const [display, setDisplay] = useState('All');
 
   useEffect(() => {
+    try {
+      initRemindersDB();
+    } catch (err) {
+      console.log(err);
+    }
+    setupDataListener('score');
+  }, []);
+
+  useEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
         <TouchableOpacity
           onPress={() => {
+            writeData('score', { display });
+
             if (display === 'All') {
               setDisplay('Not Done');
             } else if (display == 'Not Done') {
