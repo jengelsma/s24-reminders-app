@@ -13,6 +13,8 @@ import {
   initRemindersDB,
   storeReminderItem,
   setupReminderListener,
+  updateReminder,
+  deleteReminder,
 } from '../helpers/fb-reminders';
 
 const RemindersScreen = ({ route, navigation }) => {
@@ -46,8 +48,6 @@ const RemindersScreen = ({ route, navigation }) => {
       headerLeft: () => (
         <TouchableOpacity
           onPress={() => {
-            writeData('score', { display });
-
             if (display === 'All') {
               setDisplay('Not Done');
             } else if (display == 'Not Done') {
@@ -112,23 +112,10 @@ const RemindersScreen = ({ route, navigation }) => {
         title={item.text}
         checked={item.done}
         onPress={() => {
-          var newArr = [...reminders.filter(displayFilter)];
-          newArr[index] = { text: item.text, done: !item.done };
-          newArr = addRemindersNotDisplayed(newArr);
-          setReminders(newArr.sort(comparator));
+          updateReminder({ ...item, done: !item.done });
         }}
         onLongPress={() => {
-          let subset = reminders.filter(displayFilter);
-          let newArr = subset.filter((val, idx) => {
-            return idx == index ? false : true;
-          });
-          newArr = addRemindersNotDisplayed(newArr);
-          setReminders(newArr.sort(comparator));
-          Toast.show(`Deleted ${item.text}!`, {
-            duration: Toast.durations.SHORT,
-            animation: true,
-            hideOnPress: true,
-          });
+          deleteReminder(item);
         }}
       />
     );
