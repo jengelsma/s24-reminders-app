@@ -6,14 +6,17 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import { Input } from '@rneui/themed';
 
 const AddReminderScreen = ({ route, navigation }) => {
+  const [reminder, setReminder] = useState('');
+
   useEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('Reminders');
+            navigation.navigate('Reminders', { text: reminder, done: false });
           }}
         >
           <Text>Save</Text>
@@ -34,7 +37,11 @@ const AddReminderScreen = ({ route, navigation }) => {
 
   return (
     <View>
-      <Text> Add Reminder Screen </Text>
+      <Input
+        placeholder='Enter reminder'
+        value={reminder}
+        onChangeText={setReminder}
+      />
     </View>
   );
 };
