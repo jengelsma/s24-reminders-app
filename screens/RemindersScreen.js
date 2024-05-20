@@ -9,6 +9,14 @@ import React, { useEffect, useState } from 'react';
 import { Feather } from '@expo/vector-icons';
 
 const RemindersScreen = ({ route, navigation }) => {
+  const items = [
+    { text: 'get groceries', done: false },
+    { text: 'feed dog', done: false },
+    { text: 'take out trash', done: false },
+  ];
+
+  const [reminders, setReminders] = useState(items);
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -24,9 +32,13 @@ const RemindersScreen = ({ route, navigation }) => {
   });
 
   return (
-    <View>
-      <Text> Reminders Screen </Text>
-    </View>
+    <FlatList
+      keyExtractor={(item) => item.text}
+      data={reminders}
+      renderItem={({ index, item }) => {
+        return <Text> {item.text} </Text>;
+      }}
+    />
   );
 };
 
