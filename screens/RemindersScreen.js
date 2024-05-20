@@ -11,17 +11,11 @@ import { CheckBox } from '@rneui/themed';
 import Toast from 'react-native-root-toast';
 import {
   initRemindersDB,
-  writeData,
-  setupDataListener,
+  storeReminderItem,
+  setupReminderListener,
 } from '../helpers/fb-reminders';
 
 const RemindersScreen = ({ route, navigation }) => {
-  const items = [
-    { text: 'get groceries', done: false },
-    { text: 'feed dog', done: false },
-    { text: 'take out trash', done: false },
-  ];
-
   const comparator = (item1, item2) => {
     if (item1.text.toLowerCase() > item2.text.toLowerCase()) {
       return 1;
@@ -32,7 +26,7 @@ const RemindersScreen = ({ route, navigation }) => {
     }
   };
 
-  const [reminders, setReminders] = useState(items.sort(comparator));
+  const [reminders, setReminders] = useState([]);
   const [display, setDisplay] = useState('All');
 
   useEffect(() => {
@@ -41,7 +35,10 @@ const RemindersScreen = ({ route, navigation }) => {
     } catch (err) {
       console.log(err);
     }
-    setupDataListener('score');
+    setupReminderListener((items) => {
+      console.log('setting state with: ', items);
+      setReminders(items.sort(comparator));
+    });
   }, []);
 
   useEffect(() => {
@@ -78,7 +75,7 @@ const RemindersScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     if (route.params?.text) {
-      setReminders([...reminders, route.params].sort(comparator));
+      storeReminderItem(route.params);
     }
   }, [route.params?.text]);
 
@@ -139,7 +136,6 @@ const RemindersScreen = ({ route, navigation }) => {
 
   return (
     <FlatList
-      keyExtractor={(item) => item.text}
       data={reminders.filter(displayFilter)}
       renderItem={renderReminder}
     />
