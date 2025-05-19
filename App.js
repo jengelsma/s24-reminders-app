@@ -10,7 +10,9 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name='Reminders' component={RemindersScreen} />
+        <Stack.Screen 
+          name='Reminders' 
+          component={RemindersScreen}  />
         <Stack.Screen
           title='Add Reminder'
           name='AddReminder'
